@@ -1,0 +1,99 @@
+name: benchmark
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: benchmark
+  cancel-in-progress: false
+
+jobs:
+  bench:
+    name: bench-${{ matrix.circuit }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        circuit: [jwt-swiyu, mdoc-swiyu]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Devbox
+        uses: jetify-com/devbox-install-action@v0.13.0
+        with:
+          enable-cache: 'true'
+
+      - name: Cache cargo and rustup
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.rustup
+            tools/target
+          key: cargo-${{ runner.os }}-${{ hashFiles('tools/Cargo.lock', 'devbox.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Run benchmark (${{ matrix.circuit }})
+        run: devbox run bench-${{ matrix.circuit }}
+
+      - name: Upload CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-${{ matrix.circuit }}
+          path: circuits/${{ matrix.circuit }}/benchmark-*.csv
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: publish
+    needs: bench
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Devbox
+        uses: jetify-com/devbox-install-action@v0.13.0
+        with:
+          enable-cache: 'true'
+
+      - name: Download bench artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: bench-*
+          path: artifacts
+
+      - name: Replace stale CSVs with the new ones
+        run: |
+          set -euo pipefail
+          for circuit in jwt-swiyu mdoc-swiyu; do
+            rm -f circuits/$circuit/benchmark-*.csv
+            cp artifacts/bench-$circuit/benchmark-*.csv circuits/$circuit/
+          done
+          ls -la circuits/*/benchmark-*.csv
+
+      - name: Regenerate plot
+        run: devbox run plot
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add circuits/*/benchmark-*.csv scripts/benchmark.png
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "ci: refresh benchmark CSVs and plot
+
+          Run: ${{ github.run_id }} on ${{ github.sha }}"
+          git push

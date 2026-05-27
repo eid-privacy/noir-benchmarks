@@ -1,0 +1,77 @@
+[package]
+name = "noir-eid-tools"
+version = "0.1.0"
+edition = "2024"
+autobins = false
+default-run = "eid-tools"
+
+[[bin]]
+name = "eid-tools"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+thiserror = "2"
+clap = { version = "4.5", features = ["derive"] }
+p256 = { version = "0.13.2", features = ["ecdsa"] }
+k256 = { version = "0.13.4", features = ["ecdsa"] }
+crypto-bigint = "0.6.1"
+hex = "0.4.3"
+sha2 = "0.10.9"
+jsonwebtoken = { version = "10.3.0", features = ["rust_crypto"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+base64 = "0.22.1"
+chrono = "0.4"
+rand = "0.10.0"
+
+log = "0.4"
+env_logger = "0.11"
+clap-verbosity-flag = "3"
+
+# MDoc/CBOR dependencies
+ciborium = "0.2"
+ciborium-io = "0.2"
+ciborium-ll = "0.2"
+coset = "0.4"
+
+regex = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+# Pedantic subsets that are noisy for this CLI/research codebase (keep pedantic for the rest).
+cast_lossless = "allow"
+cast_possible_truncation = "allow"
+cast_possible_wrap = "allow"
+cast_sign_loss = "allow"
+case_sensitive_file_extension_comparisons = "allow"
+doc_markdown = "allow"
+must_use_candidate = "allow"
+needless_pass_by_value = "allow"
+pub_underscore_fields = "allow"
+uninlined_format_args = "allow"
+single_match_else = "allow"
+redundant_closure_for_method_calls = "allow"
+manual_let_else = "allow"
+while_let_loop = "allow"
+unnecessary_wraps = "allow"
+unnecessary_debug_formatting = "allow"
+too_many_lines = "allow"
+similar_names = "allow"
+needless_question_mark = "allow"
+needless_borrow = "allow"
+map_unwrap_or = "allow"
+many_single_char_names = "allow"
+manual_range_contains = "allow"
+items_after_statements = "allow"
+format_push_string = "allow"
+explicit_iter_loop = "allow"
+elidable_lifetime_names = "allow"
+collapsible_if = "allow"

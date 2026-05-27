@@ -1,0 +1,20 @@
+# Rust
+tools/target/
+
+# Noir
+circuits/*/target/
+
+# Devbox
+.devbox/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Bench template (re-created on each run, see bench.rs)
+circuits/*/.bench_template_Prover.toml
+
+# Editor
+.vscode/
+.idea/

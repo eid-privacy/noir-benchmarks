@@ -1,0 +1,5 @@
+[package]
+name = "mdoc_cbor"
+type = "lib"
+
+[dependencies]

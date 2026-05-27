@@ -1,0 +1,2 @@
+# Match `MdocWitness::write_prover_toml` / chart helpers (allow many locals where splitting hurts clarity).
+too-many-arguments-threshold = 10
