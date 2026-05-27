@@ -39,7 +39,7 @@ jobs:
           restore-keys: cargo-${{ runner.os }}-
 
       - name: Run benchmark (${{ matrix.circuit }})
-        run: devbox run bench-${{ matrix.circuit }}
+        run: devbox run bench-${{ matrix.circuit }}-github
 
       - name: Upload CSV
         uses: actions/upload-artifact@v4

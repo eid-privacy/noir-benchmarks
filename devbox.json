@@ -21,7 +21,9 @@
       "sign-jwt":  "cd tools && cargo run --release -- jwt sign ../data/swiyu-eid.json",
       "build-mdoc": "cd tools && cargo run --release -- mdoc build ../data/swiyu-eid.json --issuer-signed-out ../data/swiyu_IssuerSigned.cbor",
       "bench-jwt-swiyu":  "cd tools && cargo run --release -- bench --dir ../circuits/jwt-swiyu  --max-length 7000,8000,9000,10000,11000,12000,13000,14000,15000",
+      "bench-jwt-swiyu-github":  "cd tools && cargo run --release -- bench --dir ../circuits/jwt-swiyu  --max-length 7000,8000,9000,10000,11000,12000",
       "bench-mdoc-swiyu": "cd tools && cargo run --release -- bench --dir ../circuits/mdoc-swiyu --max-length 7000,8000,9000,10000,11000,12000,13000,14000,15000",
+      "bench-mdoc-swiyu-github": "cd tools && cargo run --release -- bench --dir ../circuits/mdoc-swiyu --max-length 7000,8000,9000,10000,11000,12000",
       "benchmark": [
         "devbox run bench-jwt-swiyu",
         "devbox run bench-mdoc-swiyu"
